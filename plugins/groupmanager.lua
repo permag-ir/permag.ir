@@ -2667,10 +2667,10 @@ _Show User ID_
 🔹*!whois* `[id]`
 _Show User's Username And Name_
 
-🔒*!lock* `[link | tag | edit | webpage | bot | spam | flood | markdown | mention]`
+🔒*!lock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
 _If This Actions Lock, Bot Check Actions And Delete Them_
 
-🔓*!unlock* `[link | tag | edit | webpage | bot | spam | flood | markdown | mention]`
+🔓*!unlock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
 _If This Actions Unlock, Bot Not Delete Them_
 
 🔕*!mute* `[gifs | photo | tgservice | document | sticker | video | text | forward | location | audio | voice | contact | all]`
@@ -2771,8 +2771,8 @@ text2 = [[
 🔓*!unlock edit*
 〰〰〰〰〰
 💬 جلوگیری از وارد کردن ربات
-🔒*!lock bot*
-🔓*!unlock bot*
+🔒*!lock bots*
+🔓*!unlock bots*
 〰〰〰〰〰
 💬 قفل پیام های طولانی
 🔒*!lock spam*
