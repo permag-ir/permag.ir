@@ -2667,7 +2667,7 @@ _Show User ID_
 🔹*!whois* `[id]`
 _Show User's Username And Name_
 
-🔒*!lock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
+🔒*!lock* `[link | tag | edit | webpage | bot | spam | flood | markdown | mention]`
 _If This Actions Lock, Bot Check Actions And Delete Them_
 
 🔓*!unlock* `[link | tag | edit | webpage | bot | spam | flood | markdown | mention]`
@@ -2682,7 +2682,7 @@ _If This Actions Unlock, Bot Not Delete Them_
 🔹*!set*`[rules | name | photo | link | about]`
 _Bot Set Them_
 
-🔹*!clean* `[bans | mods | bots | rules | about | silentlist]`   
+🔹*!clean* `[bans | mods | bot | rules | about | silentlist]`   
 _Bot Clean Them_
 
 🔹*!pin* `[reply]`
