@@ -2824,6 +2824,9 @@ _Show Filter List_
 〰〰〰〰〰
 ♻️*!del* 1-100
 _Delete Message_
+〰〰〰〰〰
+⏱setexpire  30
+⏱expire 
 
 _You Can Use_ *[!/#]* _To Run The Commands_
 _This Help List Only For_ *Moderators/Owners!*
@@ -3071,6 +3074,11 @@ text4 = [[
 〰〰〰〰〰
 ♻️ *!del* 1-100
 💬 حذف پیام های گروه حداکثر 100
+〰〰〰〰〰
+⏱setexpire  30
+⏱expire 
+💬 تنظیم انقضای گروه
+
 ...
 ]]
 return text4
