@@ -2754,10 +2754,17 @@ _Show User ID_
 🔹*!whois* `[id]`
 _Show User's Username And Name_
 
+<<<<<<< HEAD
 🔒*!lock* `[link | tag | edit | fosh | webpage | bots | spam | flood | markdown | mention]`
 _If This Actions Lock, Bot Check Actions And Delete Them_
 
 🔓*!unlock* `[link | tag | edit | fosh | webpage | bots | spam | flood | markdown | mention]`
+=======
+🔒*!lock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
+_If This Actions Lock, Bot Check Actions And Delete Them_
+
+🔓*!unlock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
+>>>>>>> origin/master
 _If This Actions Unlock, Bot Not Delete Them_
 
 🔕*!mute* `[gifs | photo | tgservice | document | sticker | video | text | forward | location | audio | voice | contact | all]`
