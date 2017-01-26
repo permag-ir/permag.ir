@@ -77,7 +77,11 @@ function create_config( )
     "groupmanager",
     "msg-checks",
     "plugins",
-    "tools"
+    "tools",
+    "expiretime",
+    "mute_time",
+    "del",
+    "filter"
  },
     sudo_users = {123456789},
     admins = {},
