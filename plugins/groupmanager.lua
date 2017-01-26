@@ -2670,13 +2670,13 @@ _Show User's Username And Name_
 🔒*!lock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
 _If This Actions Lock, Bot Check Actions And Delete Them_
 
-🔓*!unlock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
+🔓*!unlock* `[link | tag | edit | webpage | bot | spam | flood | markdown | mention]`
 _If This Actions Unlock, Bot Not Delete Them_
 
-🔕*!mute* `[gifs | photo | document | sticker | video | text | forward | location | audio | voice | contact | all]`
+🔕*!mute* `[gifs | photo | tgservice | document | sticker | video | text | forward | location | audio | voice | contact | all]`
 _If This Actions Lock, Bot Check Actions And Delete Them_
 
-🔔*!unmute* `[gif | photo | document | sticker | video | tgservice | text | forward | inline | location | audio | voice | contact | all]`
+🔔*!unmute* `[gif | photo | tgservice | document | sticker | video | tgservice | text | forward | inline | location | audio | voice | contact | all]`
 _If This Actions Unlock, Bot Not Delete Them_
 
 🔹*!set*`[rules | name | photo | link | about]`
@@ -2739,6 +2739,10 @@ text = [[
 
 🔇برای مشاهده دستورات ممنوعیت دستور زیر را ارسال کنید
 #ممنوع
+
+👽آگاهی از آنلاین بودن ربات
+#انلاینی
+
 ➖➖➖➖➖
 در حال حاضر زبان ربات فارسی میباشد برای تغییر زبان دستور زیر را ارسال کنید
 *!setlang en*
@@ -2843,6 +2847,10 @@ text3 = [[
 💬 ارسال اطلاعات تماس ممنوع
 🔇*!mute contact*
 🔊*!unmute contact*
+〰〰〰〰〰
+💬 اعلانات گروه ممنوع
+🔇*!mute tgservices*
+🔊*!unmute tgservices*
 〰〰〰〰〰
 💬 ارسال تبلیغات شیشه ای ممنوع
 🔇*!mute inline*
