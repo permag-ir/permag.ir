@@ -25,6 +25,7 @@ end
       is_silent_users ={},
       settings = {
           lock_link = 'yes',
+		  lock_fosh = 'yes',
           lock_tag = 'yes',
           lock_spam = 'yes',
           lock_webpage = 'no',
@@ -570,6 +571,66 @@ end
 end
 end
 
+
+---------------Lock fosh-------------------
+local function lock_fosh(msg, data, target)
+local hash = "gp_lang:"..msg.chat_id_
+local lang = redis:get(hash)
+if not is_mod(msg) then
+if not lang then
+ return "_You're Not_ *Moderator*"
+else
+ return "شما مدیر گروه نمیباشید"
+end
+end
+
+local lock_fosh = data[tostring(target)]["settings"]["lock_fosh"] 
+if lock_fosh == "yes" then
+if not lang then
+ return "*Fosh* _Posting Is Already Locked_"
+elseif lang then
+ return "قفل فحش فعال است"
+end
+else
+data[tostring(target)]["settings"]["lock_fosh"] = "yes"
+save_data(_config.moderation.data, data) 
+if not lang then
+ return "*Fosh* _ Has Been Locked_"
+else
+ return "قفل فحش فعال شد"
+end
+end
+end
+
+local function unlock_fosh(msg, data, target)
+local hash = "gp_lang:"..msg.chat_id_
+local lang = redis:get(hash)
+ if not is_mod(msg) then
+if not lang then
+return "_You're Not_ *Moderator*"
+else
+return "شما مدیر گروه نمیباشید"
+end
+end 
+
+local lock_fosh = data[tostring(target)]["settings"]["lock_fosh"]
+ if lock_fosh == "no" then
+if not lang then
+return "*Fosh* _Is Not Locked_" 
+elseif lang then
+return "قفل فحش غیرفعال میباشد"
+end
+else 
+data[tostring(target)]["settings"]["lock_fosh"] = "no" save_data(_config.moderation.data, data) 
+if not lang then
+return "*Fosh* _Has Been Unlocked_" 
+else
+return "قفل فحش غیرفعال شد"
+end
+end
+end
+
+
 ---------------Lock Tag-------------------
 local function lock_tag(msg, data, target) 
 local hash = "gp_lang:"..msg.chat_id_
@@ -1063,6 +1124,12 @@ end
 end
 
 if data[tostring(target)]["settings"] then		
+if not data[tostring(target)]["settings"]["lock_fosh"] then			
+data[tostring(target)]["settings"]["lock_fosh"] = "yes"		
+end
+end
+
+if data[tostring(target)]["settings"] then		
 if not data[tostring(target)]["settings"]["lock_tag"] then			
 data[tostring(target)]["settings"]["lock_tag"] = "yes"		
 end
@@ -1111,6 +1178,20 @@ data[tostring(target)]["mutes"]["mute_inline"] = "no"
 end
 end
 
+if data[tostring(target)]["mutes"] then		
+if not data[tostring(target)]["mutes"]["mute_inline"] then			
+data[tostring(target)]["mutes"]["mute_inline"] = "no"		
+end
+end
+
+local expiretime = redis:hget('expiretime', msg.chat_id_)
+    local expire = ''
+  if not expiretime then
+  expire = expire..'Unlimited'
+  else
+   local now = tonumber(os.time())
+   expire =  expire..math.floor((tonumber(expiretime) - tonumber(now)) / 86400) + 1
+ end
 
 if data[tostring(target)]["settings"] then		
 if not data[tostring(target)]["settings"]["lock_webpage"] then			
@@ -1120,10 +1201,10 @@ end
 
 if not lang then
 local settings = data[tostring(target)]["settings"] 
- text = "🔰*Group Settings*🔰\n\n🔐_Lock edit :_ *"..settings.lock_edit.."*\n🔐_Lock links :_ *"..settings.lock_link.."*\n🔐_Lock tags :_ *"..settings.lock_tag.."*\n🔐_Lock flood :_ *"..settings.flood.."*\n🔐_Lock spam :_ *"..settings.lock_spam.."*\n🔐_Lock mention :_ *"..settings.lock_mention.."*\n🔐_Lock webpage :_ *"..settings.lock_webpage.."*\n🔐_Lock markdown :_ *"..settings.lock_markdown.."*\n🔐_Bots protection :_ *"..settings.lock_bots.."*\n🔐_Flood sensitivity :_ *"..NUM_MSG_MAX.."*"
+ text = "🔰*Group Settings*🔰\n\n🔐_Lock edit :_ *"..settings.lock_edit.."*\n🔐_Lock links :_ *"..settings.lock_link.."*\n🔐_Lock fosh :_ *"..settings.lock_fosh.."*\n🔐_Lock tags :_ *"..settings.lock_tag.."*\n🔐_Lock flood :_ *"..settings.flood.."*\n🔐_Lock spam :_ *"..settings.lock_spam.."*\n🔐_Lock mention :_ *"..settings.lock_mention.."*\n🔐_Lock webpage :_ *"..settings.lock_webpage.."*\n🔐_Lock markdown :_ *"..settings.lock_markdown.."*\n🔐_Bots protection :_ *"..settings.lock_bots.."*\n🔐_Flood sensitivity :_ *"..NUM_MSG_MAX.."*\n*__________________*\n⏱_expite time :_ *"..expire.."*"
 else
 local settings = data[tostring(target)]["settings"] 
- text = "🔰*تنظیمات گروه*🔰\n\n🔐_قفل ویرایش پیام :_ *"..settings.lock_edit.."*\n🔐_قفل لینک :_ *"..settings.lock_link.."*\n🔐_قفل تگ :_ *"..settings.lock_tag.."*\n🔐_قفل پیام مکرر :_ *"..settings.flood.."*\n🔐_قفل هرزنامه :_ *"..settings.lock_spam.."*\n🔐_قفل فراخوانی :_ *"..settings.lock_mention.."*\n🔐_قفل صفحات وب :_ *"..settings.lock_webpage.."*\n🔐_قفل فونت :_ *"..settings.lock_markdown.."*\n🔐_محافظت در برابر ربات ها :_ *"..settings.lock_bots.."*\n🔐_حداکثر پیام مکرر :_ *"..NUM_MSG_MAX.."*"
+ text = "🔰*تنظیمات گروه*🔰\n\n🔐_قفل ویرایش پیام :_ *"..settings.lock_edit.."*\n🔐_قفل لینک :_ *"..settings.lock_link.."*\n🔐_قفل فحش :_ *"..settings.lock_fosh.."*\n🔐_قفل تگ :_ *"..settings.lock_tag.."*\n🔐_قفل پیام مکرر :_ *"..settings.flood.."*\n🔐_قفل هرزنامه :_ *"..settings.lock_spam.."*\n🔐_قفل فراخوانی :_ *"..settings.lock_mention.."*\n🔐_قفل صفحات وب :_ *"..settings.lock_webpage.."*\n🔐_قفل فونت :_ *"..settings.lock_markdown.."*\n🔐_محافظت در برابر ربات ها :_ *"..settings.lock_bots.."*\n🔐_حداکثر پیام مکرر :_ *"..NUM_MSG_MAX.."*\n*__________________*\n⏱_انقضای ربات :_ *"..expire.."*"
 end
 return text
 end
@@ -2238,6 +2319,9 @@ local target = msg.chat_id_
 if matches[2] == "link" then
 return lock_link(msg, data, target)
 end
+if matches[2] == "fosh" then
+return lock_fosh(msg, data, target)
+end
 if matches[2] == "tag" then
 return lock_tag(msg, data, target)
 end
@@ -2268,6 +2352,9 @@ if matches[1] == "unlock" and is_mod(msg) then
 local target = msg.chat_id_
 if matches[2] == "link" then
 return unlock_link(msg, data, target)
+end
+if matches[2] == "fosh" then
+return unlock_fosh(msg, data, target)
 end
 if matches[2] == "tag" then
 return unlock_tag(msg, data, target)
@@ -2667,10 +2754,17 @@ _Show User ID_
 🔹*!whois* `[id]`
 _Show User's Username And Name_
 
+<<<<<<< HEAD
+🔒*!lock* `[link | tag | edit | fosh | webpage | bots | spam | flood | markdown | mention]`
+_If This Actions Lock, Bot Check Actions And Delete Them_
+
+🔓*!unlock* `[link | tag | edit | fosh | webpage | bots | spam | flood | markdown | mention]`
+=======
 🔒*!lock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
 _If This Actions Lock, Bot Check Actions And Delete Them_
 
 🔓*!unlock* `[link | tag | edit | webpage | bots | spam | flood | markdown | mention]`
+>>>>>>> origin/master
 _If This Actions Unlock, Bot Not Delete Them_
 
 🔕*!mute* `[gifs | photo | tgservice | document | sticker | video | text | forward | location | audio | voice | contact | all]`
@@ -2682,7 +2776,7 @@ _If This Actions Unlock, Bot Not Delete Them_
 🔹*!set*`[rules | name | photo | link | about]`
 _Bot Set Them_
 
-🔹*!clean* `[bans | mods | bot | rules | about | silentlist]`   
+🔹*!clean* `[bans | mods | bots | rules | about | silentlist]`   
 _Bot Clean Them_
 
 🔹*!pin* `[reply]`
@@ -2717,6 +2811,19 @@ _Show Group Information_
 
 ⚜*!link*
 _Show Group Link_
+
+🔇*!mt 0 1* (0h 1m)
+🔊*!unmt*
+_Mute All With Time_
+
+🚫*!filter* 
+🚫*!unfilter* 
+_filter word_
+🚫*!filterlist* 
+_Show Filter List_
+〰〰〰〰〰
+♻️*!del* 1-100
+_Delete Message_
 
 _You Can Use_ *[!/#]* _To Run The Commands_
 _This Help List Only For_ *Moderators/Owners!*
@@ -2762,6 +2869,10 @@ text2 = [[
 🔒*!lock link*
 🔓*!unlock link*
 〰〰〰〰〰
+💬 قفل کردن یوزرنیم
+🔒*!lock tag*
+🔓*!unlock tag*
+〰〰〰〰〰
 💬 قفل کردن لینک سایت ها
 🔒*!lock webpage*
 🔓*!unlock webpage*
@@ -2789,6 +2900,10 @@ text2 = [[
 💬 قفل هایپرلینک
 🔒*!lock mention*
 🔓*!unlock mention*
+〰〰〰〰〰
+💬 قفل فحش
+🔒*!lock fosh*
+🔓*!unlock fosh*
 〰〰〰〰〰
 ...
 ]]
@@ -2859,6 +2974,11 @@ text3 = [[
 💬 همه چیز ممنوع
 🔇*!mute all*
 🔊*!unmute all*
+〰〰〰〰〰
+💬 میوت تایم دار
+عدد اول ساعت عدد دوم دقیقه
+🔇*!mt 0 1*
+🔊*!unmt*
 〰〰〰〰〰
 ...
 ]]
@@ -2942,6 +3062,15 @@ text4 = [[
 📍 *!pin* `[reply]`
 📍 *!unpin* 
 💬 سنجاق کردن متن در گروه
+〰〰〰〰〰
+🚫 *!filter* 
+🚫 *!unfilter* 
+💬 فیلتر کلمات
+🚫 *!filterlist* 
+💬 نمایش لیست فیلتر
+〰〰〰〰〰
+♻️ *!del* 1-100
+💬 حذف پیام های گروه حداکثر 100
 ...
 ]]
 return text4
