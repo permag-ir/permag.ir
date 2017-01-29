@@ -31,7 +31,8 @@ end
           lock_webpage = 'no',
           lock_markdown = 'no',
           flood = 'yes',
-          lock_bots = 'yes'
+          lock_bots = 'yes',
+		  welcome = 'yes'
           },
    mutes = {
                   mute_fwd = 'no',
@@ -688,7 +689,6 @@ return "ارسال تگ در گروه آزاد شد"
 end
 end
 end
-
 ---------------Lock Mention-------------------
 local function lock_mention(msg, data, target)
  local hash = "gp_lang:"..msg.chat_id_
@@ -1199,6 +1199,14 @@ data[tostring(target)]["settings"]["lock_webpage"] = "no"
 end
 end
 
+if data[tostring(target)]["settings"] then		
+if not data[tostring(target)]["settings"]["lock_welcome"] then			
+data[tostring(target)]["settings"]["lock_welcome"] = "no"		
+end
+end
+
+
+
 if not lang then
 local settings = data[tostring(target)]["settings"] 
  text = "🔰*Group Settings*🔰\n\n🔐_Lock edit :_ *"..settings.lock_edit.."*\n🔐_Lock links :_ *"..settings.lock_link.."*\n🔐_Lock fosh :_ *"..settings.lock_fosh.."*\n🔐_Lock tags :_ *"..settings.lock_tag.."*\n🔐_Lock flood :_ *"..settings.flood.."*\n🔐_Lock spam :_ *"..settings.lock_spam.."*\n🔐_Lock mention :_ *"..settings.lock_mention.."*\n🔐_Lock webpage :_ *"..settings.lock_webpage.."*\n🔐_Lock markdown :_ *"..settings.lock_markdown.."*\n🔐_Bots protection :_ *"..settings.lock_bots.."*\n🔐_Flood sensitivity :_ *"..NUM_MSG_MAX.."*\n*__________________*\n⏱_expite time :_ *"..expire.."*"
@@ -1616,6 +1624,7 @@ return "بیصدا کردن فیلم غیر فعال شد"
 end
 end
 end
+
 ---------------Mute Audio-------------------
 local function mute_audio(msg, data, target) 
 local hash = "gp_lang:"..msg.chat_id_
@@ -1646,7 +1655,7 @@ end
 end
 end
 
-local function unmute_video(msg, data, target)
+local function unmute_audio(msg, data, target)
 local hash = "gp_lang:"..msg.chat_id_
 local lang = redis:get(hash)
  if not is_mod(msg) then
@@ -2322,6 +2331,9 @@ end
 if matches[2] == "fosh" then
 return lock_fosh(msg, data, target)
 end
+if matches[2] == "welcome" then
+return lock_welcome(msg, data, target)
+end
 if matches[2] == "tag" then
 return lock_tag(msg, data, target)
 end
@@ -2355,6 +2367,9 @@ return unlock_link(msg, data, target)
 end
 if matches[2] == "fosh" then
 return unlock_fosh(msg, data, target)
+end
+if matches[2] == "welcome" then
+return unlock_welcome(msg, data, target)
 end
 if matches[2] == "tag" then
 return unlock_tag(msg, data, target)
@@ -2608,6 +2623,8 @@ tdcli_function ({
             return "قوانین گروه پاک شد"
 			end
        end
+	   
+	   
 			if matches[2] == 'about' then
         if gp_type(chat) == "chat" then
 				if not data[tostring(chat)]['about'] then
@@ -2823,11 +2840,17 @@ _filter word_
 _Show Filter List_
 〰〰〰〰〰
 ♻️*!del* 1-100
+♻️*!delall* `[reply]`
 _Delete Message_
 〰〰〰〰〰
-⏱setexpire  30
-⏱expire 
-
+⏱*!setexpire*  30
+⏱*!expire*
+_set expire for group_
+〰〰〰〰〰
+🎗*!setwelcome* text
+🗑*!delwelcome*
+_set welcome for group_
+〰〰〰〰〰
 _You Can Use_ *[!/#]* _To Run The Commands_
 _This Help List Only For_ *Moderators/Owners!*
 _Its Means, Only Group_ *Moderators/Owners* _Can Use It!_
@@ -3073,12 +3096,16 @@ text4 = [[
 💬 نمایش لیست فیلتر
 〰〰〰〰〰
 ♻️ *!del* 1-100
+♻️ *!delall* `[reply]`
 💬 حذف پیام های گروه حداکثر 100
 〰〰〰〰〰
-⏱setexpire  30
-⏱expire 
+⏱ *!setexpire*  30
+⏱ *!expire*
 💬 تنظیم انقضای گروه
-
+〰〰〰〰〰
+🎗*!setwelcome* متن پیام
+🗑 *!delwelcome*
+💬 فعال و غیر فعال کردن متن خوش آمدگویی
 ...
 ]]
 return text4
@@ -3090,7 +3117,97 @@ text5 = [[
 ]]
 return text5 
 end
+
+--------------------- Welcome -----------------------
+
+local lang = redis:get("gp_lang:"..msg.chat_id_)
+
+----------------------------------------
+
+if matches[1] == 'setwelcome' and matches[2] then
+if not is_mod(msg) then
+if not lang then
+ return "_You're Not_ *Moderator*"
+else
+ return "شما مدیر گروه نمیباشید"
 end
+end
+
+
+	if not lang then
+		welcome = (matches[2])
+		redis:hset('permag_welcome',msg.chat_id_,tostring(welcome))
+		tdcli.sendMessage(msg.chat_id_, msg.id_, 1, 'Welcome Message Seted :\n\n'..matches[2], 1, 'md')
+	else
+		welcome = (matches[2])
+		redis:hset('permag_welcome',msg.chat_id_,tostring(welcome))
+		tdcli.sendMessage(msg.chat_id_, msg.id_, 1, 'پیام خوش آمد ثبت شد:\n\n'..matches[2], 1, 'md')
+	end
+	
+end
+
+-----------------------------------------
+if matches[1] == 'delwelcome' then
+if not is_mod(msg) then
+if not lang then
+ return "_You're Not_ *Moderator*"
+else
+ return "شما مدیر گروه نمیباشید"
+end
+end
+	if not lang then
+		if not redis:hget('permag_welcome',msg.chat_id_) then
+			tdcli.sendMessage(msg.chat_id_, msg.id_, 1, 'Already No welcome message available!', 1, 'md')
+		else
+			redis:hdel('permag_welcome',msg.chat_id_)
+			tdcli.sendMessage(msg.chat_id_, msg.id_, 1, 'Weclome Message Deleted!', 1, 'md')
+		end
+	else
+		if not redis:hget('permag_welcome',msg.chat_id_) then
+			tdcli.sendMessage(msg.chat_id_, msg.id_, 1, 'در حال حاضر هیچ پیام خوش آمد گویی وجود ندارد !', 1, 'md')
+		else
+			welcome = (matches[2])
+			redis:hdel('permag_welcome',msg.chat_id_)
+			tdcli.sendMessage(msg.chat_id_, msg.id_, 1, 'پیام خوش آمد گویی حذف شد', 1, 'md')
+		end
+	end
+end
+end
+-----------------------------------------
+local function pre_process(msg)
+	if msg.content_.members_ then
+		if redis:hget('permag_welcome',msg.chat_id_) then
+			if msg.content_.members_[0] then
+				name = msg.content_.members_[0].first_name_
+				if msg.content_.members_[0].type_.ID == 'UserTypeBot' then
+					return nil
+				else
+					data = redis:hget('permag_welcome',msg.chat_id_)
+					if data:match('{name}') then
+						out = data:gsub('{name}',name)
+					else
+						out = data
+					end
+						tdcli.sendMessage(msg.chat_id_, msg.id_, 1, tostring(out:gsub('\\_','_')), 1, 'md')
+				end
+			end
+		end
+	end
+	
+	if msg.content_.ID == 'MessageChatJoinByLink' then 
+		if redis:hget('permag_welcome',msg.chat_id_) then
+		--	name = data.first_name_ 	# Not Fixed Yet!
+			Data = redis:hget('permag_welcome',msg.chat_id_)
+			if Data:match('{name}') then
+				out = Data:gsub('{name}',' ')
+			else
+				out = Data
+			end
+				tdcli.sendMessage(msg.chat_id_, msg.id_, 1, tostring(out:gsub('\\_','_')), 1, 'md')
+		end
+	end
+end
+
 return {
 patterns ={
 "^[!/#](مدیریت)$",
@@ -3137,8 +3254,12 @@ patterns ={
 "^[!/#](setlang) (.*)$",
 "^([https?://w]*.?t.me/joinchat/%S+)$",
 "^([https?://w]*.?telegram.me/joinchat/%S+)$",
+"^[!/#](setwelcome) (.*)",
+"^[!/#](delwelcome)$"
+
 },
-run=run
+run=run,
+pre_process = pre_process
 }
 --end groupmanager.lua #permag.ir#
 -- http://permag.ir
