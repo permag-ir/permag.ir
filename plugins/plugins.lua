@@ -22,7 +22,7 @@ local function plugin_exists( name )
 end
 
 local function list_all_plugins(only_enabled)
-  local tmp = check_markdown('\n\n@permag_bots')
+  local tmp = check_markdown('\n\n@permag')
   local text = ''
   local nsum = 0
   for k, v in pairs( plugins_names( )) do
@@ -68,7 +68,7 @@ local function list_plugins(only_enabled)
      -- text = text..v..'  '..status..'\n'
     end
   end
-  local text = text.."\n_All Plugins Reloaded_\n\n"..nact.." *Plugins Enabled*\n"..nsum.." *Plugins Installed*\n\n@permag_bots"
+  local text = text.."\n_All Plugins Reloaded_\n\n"..nact.." *Plugins Enabled*\n"..nsum.." *Plugins Installed*\n\n@permag"
 return text
 end
 
@@ -224,15 +224,9 @@ return {
     "^[!/#](pl) (+) ([%w_%.%-]+) (chat)",
     "^[!/#](pl) (-) ([%w_%.%-]+) (chat)",
     "^!pl? (*)$",
-    "^[!/](reload)$"
+    "^[!/#](reload)$"
     },
   run = run
 }
 
 end
-
--- کد های پایین در ربات نشان داده نمیشوند
--- http://permag.ir
--- @permag_ir
--- @permag_bots
--- @permag
