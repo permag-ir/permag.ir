@@ -14,7 +14,7 @@ local data = load_data(_config.moderation.data)
     if msg.text then
   if msg.text:match("(.*)") then
     if not data[tostring(chat)] and not redis:get(auto_leave) and not is_admin(msg) then
-  tdcli.sendMessage(msg.chat_id_, "", 0, "_This chat is not an my_ *group*", 0, "md")
+  tdcli.sendMessage(msg.chat_id_, "", 0, "_This Is Not One Of My Groups_*", 0, "md")
   tdcli.changeChatMemberStatus(chat, our_id, 'Left', dl_cb, nil)
       end
    end
@@ -114,6 +114,11 @@ end
 	else
 		lock_tag = 'no'
 	end
+	if settings.lock_arabic then
+		lock_arabic = settings.lock_arabic
+	else
+		lock_arabic = 'no'
+	end
 	if settings.lock_mention then
 		lock_mention = settings.lock_mention
 	else
@@ -161,8 +166,25 @@ kick_user(user, chat)
        end
     end
  end
+if lock_arabic == "yes" then
+		local is_arabic_caption = msg.content_.caption_:match("[\216-\219][\128-\191]")
+if is_arabic_caption then
+ if is_channel then
+ del_msg(msg.chat_id_, tonumber(msg.id_))
+  elseif is_chat then
+kick_user(user, chat)
+       end
+    end
+ end
+if is_filter(msg, msg.content_.caption_) then
+ if is_channel then
+ del_msg(msg.chat_id_, tonumber(msg.id_))
+  elseif is_chat then
+kick_user(user, chat)
+      end
+    end
 if lock_tag == "yes" then
-local tag_caption = msg.content_.caption_:match("@")
+local tag_caption = msg.content_.caption_:match("@") or msg.content_.caption_:match("#")
 if tag_caption then
  if is_channel then
  del_msg(msg.chat_id_, tonumber(msg.id_))
@@ -282,8 +304,23 @@ and lock_link == "yes" then
 kick_user(user, chat)
    end
 end
-local tag_msg = msg.text:match("@")
+local tag_msg = msg.text:match("@") or msg.text:match("#")
 if tag_msg and lock_tag == "yes" then
+ if is_channel then
+ del_msg(msg.chat_id_, tonumber(msg.id_))
+  elseif is_chat then
+kick_user(user, chat)
+   end
+end
+if is_filter(msg, msg.text) then
+ if is_channel then
+ del_msg(msg.chat_id_, tonumber(msg.id_))
+  elseif is_chat then
+kick_user(user, chat)
+      end
+    end
+local arabic_msg = msg.text:match("[\216-\219][\128-\191]")
+if arabic_msg and lock_arabic == "yes" then
  if is_channel then
  del_msg(msg.chat_id_, tonumber(msg.id_))
   elseif is_chat then
@@ -371,7 +408,8 @@ return {
 	patterns = {},
 	pre_process = pre_process
 }
---End msg_checks.lua
+-- کد های پایین در ربات نشان داده نمیشوند
 -- http://permag.ir
 -- @permag_ir
 -- @permag_bots
+-- @permag

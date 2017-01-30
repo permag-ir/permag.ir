@@ -2,7 +2,11 @@ tdcli = dofile('./tg/tdcli.lua')
 serpent = (loadfile "./libs/serpent.lua")()
 feedparser = (loadfile "./libs/feedparser.lua")()
 our_id = 123456789 -- Put Here Your Bot ID
---ایدی رباتتونو اینجا بزارید
+URL = require "socket.url"
+http = require "socket.http"
+https = require "ssl.https"
+ltn12 = require "ltn12"
+
 json = (loadfile "./libs/JSON.lua")()
 mimetype = (loadfile "./libs/mimetype.lua")()
 redis = (loadfile "./libs/redis.lua")()
@@ -79,20 +83,25 @@ function create_config( )
     "plugins",
     "tools",
     "expiretime",
-    "mute_time",
+    "mute-time",
     "del",
     "filter",
-	"lock_fosh"
+	"lock-fosh"
  },
     sudo_users = {123456789},
     admins = {},
     disabled_channels = {},
     moderation = {data = './data/moderation.json'},
-    info_text = [[》permag.ir v2
-
+    info_text = [[》permag.ir v3
 
 🔰Our channel :
 》@permag_bots《
+
+🔰Our channel2 :
+》@permag_ir《
+
+🔰Our channel3 :
+》@permag《
 
 🔰Our website :
 》http://permag.ir
@@ -181,6 +190,70 @@ function gp_type(chat_id)
       gp_type = "chat"
   end
   return gp_type
+end
+
+function is_reply(msg)
+  local var = false
+    if msg.reply_to_message_id_ ~= 0 then -- reply message id is not 0
+      var = true
+    end
+  return var
+end
+
+function is_supergroup(msg)
+  chat_id = tostring(msg.chat_id_)
+  if chat_id:match('^-100') then --supergroups and channels start with -100
+    if not msg.is_post_ then
+    return true
+    end
+  else
+    return false
+  end
+end
+
+function is_channel(msg)
+  chat_id = tostring(msg.chat_id_)
+  if chat_id:match('^-100') then -- Start with -100 (like channels and supergroups)
+  if msg.is_post_ then -- message is a channel post
+    return true
+  else
+    return false
+  end
+  end
+end
+
+function is_group(msg)
+  chat_id = tostring(msg.chat_id_)
+  if chat_id:match('^-100') then --not start with -100 (normal groups does not have -100 in first)
+    return false
+  elseif chat_id:match('^-') then
+    return true
+  else
+    return false
+  end
+end
+
+function is_private(msg)
+  chat_id = tostring(msg.chat_id_)
+  if chat_id:match('^-') then --private chat does not start with -
+    return false
+  else
+    return true
+  end
+end
+
+function check_markdown(text) --markdown escape ( when you need to escape markdown , use it like : check_markdown('your text')
+		str = text
+		if str:match('_') then
+			output = str:gsub('_','\\_')
+		elseif str:match('*') then
+			output = str:gsub('*','\\*')
+		elseif str:match('`') then
+			output = str:gsub('`','\\`')
+		else
+			output = str
+		end
+	return output
 end
 
 function is_sudo(msg)
@@ -389,6 +462,19 @@ function is_gbanned(user_id)
 return var
 end
 
+function is_filter(msg, text)
+local var = false
+local data = load_data(_config.moderation.data)
+  if data[tostring(msg.chat_id_)]['filterlist'] then
+for k,v in pairs(data[tostring(msg.chat_id_)]['filterlist']) do 
+    if string.find(string.lower(text), string.lower(k)) then
+       var = true
+        end
+     end
+  end
+ return var
+end
+
 function kick_user(user_id, chat_id)
 if not tonumber(user_id) then
 return false
@@ -402,16 +488,30 @@ local msgid = {[0] = message_ids}
 end
 
  function banned_list(chat_id)
+local hash = "gp_lang:"..chat_id
+local lang = redis:get(hash)
     local data = load_data(_config.moderation.data)
     local i = 1
-  if not data[tostring(chat_id)] then
-    return "_Group is not added_"
+  if not data[tostring(msg.chat_id_)] then
+  if not lang then
+    return '_Group is not added_'
+else
+    return 'گروه به لیست گروه های مدیریتی ربات اضافه نشده است'
+   end
   end
   -- determine if table is empty
   if next(data[tostring(chat_id)]['banned']) == nil then --fix way
-    return "_No banned users in this group_"
-  end
-  local message = 'List of banned users :\n'
+     if not lang then
+					return "_No_ *banned* _users in this group_"
+   else
+					return "*هیچ کاربری از این گروه محروم نشده*"
+              end
+				end
+       if not lang then
+   message = '*List of banned users :*\n'
+         else
+   message = '_لیست کاربران محروم شده از گروه :_\n'
+     end
   for k,v in pairs(data[tostring(chat_id)]['banned']) do
     message = message ..i.. '- '..v..' [' ..k.. '] \n'
    i = i + 1
@@ -420,16 +520,30 @@ end
 end
 
  function silent_users_list(chat_id)
+local hash = "gp_lang:"..chat_id
+local lang = redis:get(hash)
     local data = load_data(_config.moderation.data)
     local i = 1
-  if not data[tostring(chat_id)] then
-    return "_Group is not added_"
+  if not data[tostring(msg.chat_id_)] then
+  if not lang then
+    return '_Group is not added_'
+else
+    return 'گروه به لیست گروه های مدیریتی ربات اضافه نشده است'
+   end
   end
   -- determine if table is empty
   if next(data[tostring(chat_id)]['is_silent_users']) == nil then --fix way
-    return "_No silent users in this group_"
-  end
-  local message = 'List of silent users :\n'
+        if not lang then
+					return "_No_ *silent* _users in this group_"
+   else
+					return "*لیست کاربران سایلنت شده خالی است*"
+             end
+				end
+      if not lang then
+   message = '*List of silent users :*\n'
+       else
+   message = '_لیست کاربران سایلنت شده :_\n'
+    end
   for k,v in pairs(data[tostring(chat_id)]['is_silent_users']) do
     message = message ..i.. '- '..v..' [' ..k.. '] \n'
    i = i + 1
@@ -437,7 +551,9 @@ end
   return message
 end
 
- function gbanned_list()
+ function gbanned_list(msg)
+local hash = "gp_lang:"..msg.chat_id_
+local lang = redis:get(hash)
     local data = load_data(_config.moderation.data)
     local i = 1
   if not data['gban_users'] then
@@ -445,15 +561,63 @@ end
     save_data(_config.moderation.data, data)
   end
   if next(data['gban_users']) == nil then --fix way
-    return "_No globally banned users available_"
-  end
-  local message = '_List of globally banned users :_\n'
+    if not lang then
+					return "_No_ *globally banned* _users available_"
+   else
+					return "*هیچ کاربری از گروه های ربات محروم نشده*"
+             end
+				end
+        if not lang then
+   message = '*List of globally banned users :*\n'
+   else
+   message = '_لیست کاربران محروم شده از گروه های ربات :_\n'
+   end
   for k,v in pairs(data['gban_users']) do
     message = message ..i.. '- '..v..' [' ..k.. '] \n'
    i = i + 1
 end
   return message
 end
+
+ function filter_list(msg)
+local hash = "gp_lang:"..msg.chat_id_
+local lang = redis:get(hash)
+    local data = load_data(_config.moderation.data)
+  if not data[tostring(msg.chat_id_)]['filterlist'] then
+    data[tostring(msg.chat_id_)]['filterlist'] = {}
+    save_data(_config.moderation.data, data)
+    end
+  if not data[tostring(msg.chat_id_)] then
+  if not lang then
+    return '_Group is not added_'
+else
+    return 'گروه به لیست گروه های مدیریتی ربات اضافه نشده است'
+   end
+  end
+  -- determine if table is empty
+  if next(data[tostring(msg.chat_id_)]['filterlist']) == nil then --fix way
+      if not lang then
+    return "*Filtered words list* _is empty_"
+      else
+    return "_لیست کلمات فیلتر شده خالی است_"
+     end
+  end
+  if not data[tostring(msg.chat_id_)]['filterlist'] then
+    data[tostring(msg.chat_id_)]['filterlist'] = {}
+    save_data(_config.moderation.data, data)
+    end
+      if not lang then
+       filterlist = '*List of filtered words :*\n'
+         else
+       filterlist = '_لیست کلمات فیلتر شده :_\n'
+    end
+ local i = 1
+   for k,v in pairs(data[tostring(msg.chat_id_)]['filterlist']) do
+              filterlist = filterlist..'*'..i..'* - _'..k..'_\n'
+             i = i + 1
+         end
+     return filterlist
+   end
 
 function msg_valid(msg)
   if msg.date_ < os.time() - 60 then
@@ -483,7 +647,7 @@ function match_plugin(plugin, plugin_name, msg)
           local result = plugin.pre_process(msg)
           if result then
             print("pre process: ", plugin.plugin_name)
-            tdcli.sendMessage(receiver, msg.id_, 0, result, 0, "md")
+            --tdcli.sendMessage(receiver, msg.id_, 0, result, 0, "md")
           end
      end
   for k, pattern in pairs(plugin.patterns) do
@@ -728,7 +892,8 @@ elseif msg.content_.ID == "MessageGame" then
   end
 
 end
-
+-- کد های پایین در ربات نشان داده نمیشوند
 -- http://permag.ir
 -- @permag_ir
 -- @permag_bots
+-- @permag

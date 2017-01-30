@@ -11,10 +11,10 @@ local lang = redis:get(hash)
 kick_user(data.id_, arg.chat_id)
 end
 end
-if data.username_ and not data.username_:match("_") then
-user_name = '@'..data.username_
+if data.username_ then
+user_name = '@'..check_markdown(data.username_)
 else
-user_name = data.first_name_
+user_name = check_markdown(data.first_name_)
 end
 if is_banned(data.id_, arg.chat_id) then
    if not lang then
@@ -62,15 +62,16 @@ local hash = "gp_lang:"..data.chat_id_
 local lang = redis:get(hash)
   local cmd = arg.cmd
 if not tonumber(data.sender_user_id_) then return false end
+if data.sender_user_id_ then
   if cmd == "ban" then
 local function ban_cb(arg, data)
 local hash = "gp_lang:"..arg.chat_id
 local lang = redis:get(hash)
     local administration = load_data(_config.moderation.data)
-if data.username_ and not data.username_:match("_") then
-user_name = '@'..data.username_
+if data.username_ then
+user_name = '@'..check_markdown(data.username_)
 else
-user_name = data.first_name_
+user_name = check_markdown(data.first_name_)
 end
    if is_mod1(arg.chat_id, data.id_) then
   if not lang then
@@ -105,10 +106,10 @@ local function unban_cb(arg, data)
 local hash = "gp_lang:"..arg.chat_id
 local lang = redis:get(hash)
     local administration = load_data(_config.moderation.data)
-if data.username_ and not data.username_:match("_") then
-user_name = '@'..data.username_
+if data.username_ then
+user_name = '@'..check_markdown(data.username_)
 else
-user_name = data.first_name_
+user_name = check_markdown(data.first_name_)
 end
 if not administration[tostring(arg.chat_id)]['banned'][tostring(data.id_)] then
     if not lang then
@@ -135,10 +136,10 @@ local function silent_cb(arg, data)
 local hash = "gp_lang:"..arg.chat_id
 local lang = redis:get(hash)
     local administration = load_data(_config.moderation.data)
-if data.username_ and not data.username_:match("_") then
-user_name = '@'..data.username_
+if data.username_ then
+user_name = '@'..check_markdown(data.username_)
 else
-user_name = data.first_name_
+user_name = check_markdown(data.first_name_)
 end
    if is_mod1(arg.chat_id, data.id_) then
   if not lang then
@@ -172,10 +173,10 @@ local function unsilent_cb(arg, data)
 local hash = "gp_lang:"..arg.chat_id
 local lang = redis:get(hash)
     local administration = load_data(_config.moderation.data)
-if data.username_ and not data.username_:match("_") then
-user_name = '@'..data.username_
+if data.username_ then
+user_name = '@'..check_markdown(data.username_)
 else
-user_name = data.first_name_
+user_name = check_markdown(data.first_name_)
 end
 if not administration[tostring(arg.chat_id)]['is_silent_users'][tostring(data.id_)] then
    if not lang then
@@ -202,10 +203,10 @@ local function gban_cb(arg, data)
 local hash = "gp_lang:"..arg.chat_id
 local lang = redis:get(hash)
     local administration = load_data(_config.moderation.data)
-if data.username_ and not data.username_:match("_") then
-user_name = '@'..data.username_
+if data.username_ then
+user_name = '@'..check_markdown(data.username_)
 else
-user_name = data.first_name_
+user_name = check_markdown(data.first_name_)
 end
   if not administration['gban_users'] then
     administration['gban_users'] = {}
@@ -213,7 +214,7 @@ end
     end
    if is_admin1(data.id_) then
   if not lang then
-  return tdcli.sendMessage(arg.chat_id, "", 0, "_You can't_ *globally banned* _other admins_", 0, "md")
+  return tdcli.sendMessage(arg.chat_id, "", 0, "_You can't_ *globally ban* _other admins_", 0, "md")
   else
   return tdcli.sendMessage(arg.chat_id, "", 0, "*شما نمیتوانید ادمین های ربات رو از تمامی گروه های ربات محروم کنید*", 0, "md")
         end
@@ -244,10 +245,10 @@ local function ungban_cb(arg, data)
 local hash = "gp_lang:"..arg.chat_id
 local lang = redis:get(hash)
     local administration = load_data(_config.moderation.data)
-if data.username_ and not data.username_:match("_") then
-user_name = '@'..data.username_
+if data.username_ then
+user_name = '@'..check_markdown(data.username_)
 else
-user_name = data.first_name_
+user_name = check_markdown(data.first_name_)
 end
   if not administration['gban_users'] then
     administration['gban_users'] = {}
@@ -300,18 +301,26 @@ tdcli.deleteMessagesFromUser(data.chat_id_, data.sender_user_id_, dl_cb, nil)
        end
     end
   end
+else
+    if lang then
+  return tdcli.sendMessage(data.chat_id_, "", 0, "_کاربر یافت نشد_", 0, "md")
+   else
+  return tdcli.sendMessage(data.chat_id_, "", 0, "*User Not Found*", 0, "md")
+      end
+   end
 end
 local function action_by_username(arg, data)
 local hash = "gp_lang:"..arg.chat_id
 local lang = redis:get(hash)
   local cmd = arg.cmd
     local administration = load_data(_config.moderation.data)
-if data.type_.user_.username_ and not data.type_.user_.username_:match("_") then
-user_name = '@'..data.type_.user_.username_
-else
-user_name = data.title_
-end
 if not arg.username then return false end
+    if data.id_ then
+if data.type_.user_.username_ then
+user_name = '@'..check_markdown(data.type_.user_.username_)
+else
+user_name = check_markdown(data.title_)
+end
   if cmd == "ban" then
    if is_mod1(arg.chat_id, data.id_) then
   if not lang then
@@ -398,7 +407,7 @@ end
     end
    if is_admin1(data.id_) then
   if not lang then
-  return tdcli.sendMessage(arg.chat_id, "", 0, "_You can't_ *globally banned* _other admins_", 0, "md")
+  return tdcli.sendMessage(arg.chat_id, "", 0, "_You can't_ *globally ban* _other admins_", 0, "md")
   else
   return tdcli.sendMessage(arg.chat_id, "", 0, "*شما نمیتوانید ادمین های ربات رو از تمامی گروه های ربات محروم کنید*", 0, "md")
         end
@@ -466,6 +475,13 @@ tdcli.deleteMessagesFromUser(arg.chat_id, data.id_, dl_cb, nil)
        end
     end
   end
+else
+    if lang then
+  return tdcli.sendMessage(arg.chat_id, "", 0, "_کاربر یافت نشد_", 0, "md")
+   else
+  return tdcli.sendMessage(arg.chat_id, "", 0, "*User Not Found*", 0, "md")
+      end
+   end
 end
 local function run(msg, matches)
 local hash = "gp_lang:"..msg.chat_id_
@@ -541,7 +557,7 @@ end
   if matches[2] and string.match(matches[2], '^%d+$') then
    if is_admin1(matches[2]) then
    if not lang then
-    return tdcli.sendMessage(msg.chat_id_, "", 0, "_You can't globally banned other admins_", 0, "md")
+    return tdcli.sendMessage(msg.chat_id_, "", 0, "_You can't globally ban other admins_", 0, "md")
 else
     return tdcli.sendMessage(msg.chat_id_, "", 0, "*شما نمیتوانید ادمین های ربات رو از گروه های ربات محروم کنید*", 0, "md")
         end
@@ -798,7 +814,7 @@ data[tostring(chat)]['is_silent_users'][tostring(matches[2])] = nil
 			end
      end
 if matches[1] == "gbanlist" and is_admin(msg) then
-  return gbanned_list()
+  return gbanned_list(msg)
  end
 if matches[1] == "silentlist" and is_mod(msg) then
   return silent_users_list(chat)
@@ -834,6 +850,8 @@ return {
 pre_process = pre_process
 }
 
+-- کد های پایین در ربات نشان داده نمیشوند
 -- http://permag.ir
 -- @permag_ir
 -- @permag_bots
+-- @permag

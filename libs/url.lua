@@ -1,36 +1,8 @@
---[[
-Copyright 2004-2007 Diego Nehab. 
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-]]
------------------------------------------------------------------------------
--- URI parsing, composition and relative URL resolution
--- LuaSocket toolkit.
--- Author: Diego Nehab
--- RCS ID: $Id: url.lua,v 1.38 2006/04/03 04:45:42 diego Exp $
------------------------------------------------------------------------------
-    
-    
--- updated for a module()-free world of 5.3 by slact
-
+-- کد های پایین در ربات نشان داده نمیشوند
+-- http://permag.ir
+-- @permag_ir
+-- @permag_bots
+-- @permag
 
 local string = require("string")
 local base = _G
@@ -267,3 +239,9 @@ function Url.build_path(parsed, unsafe)
 end
 
 return Url
+
+-- کد های پایین در ربات نشان داده نمیشوند
+-- http://permag.ir
+-- @permag_ir
+-- @permag_bots
+-- @permag

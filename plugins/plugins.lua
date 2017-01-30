@@ -68,7 +68,7 @@ local function list_plugins(only_enabled)
      -- text = text..v..'  '..status..'\n'
     end
   end
-  local text = text.."\n_All Plugins Reloaded_\n\n"..nact.." *Plugins Enabled*\n"..nsum.." *Plugins Installed*\n\n"
+  local text = text.."\n_All Plugins Reloaded_\n\n"..nact.." *Plugins Enabled*\n"..nsum.." *Plugins Installed*\n\n@permag_bots"
 return text
 end
 
@@ -224,14 +224,15 @@ return {
     "^[!/#](pl) (+) ([%w_%.%-]+) (chat)",
     "^[!/#](pl) (-) ([%w_%.%-]+) (chat)",
     "^!pl? (*)$",
-    "^[!/#](reload)$"
+    "^[!/](reload)$"
     },
   run = run
 }
 
 end
 
-
+-- کد های پایین در ربات نشان داده نمیشوند
 -- http://permag.ir
 -- @permag_ir
 -- @permag_bots
+-- @permag

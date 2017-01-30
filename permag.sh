@@ -29,12 +29,11 @@ if [ ! -f ./tg/tgcli ]; then
     echo "tg not found"
     echo "Run $0 install"
     exit 1
- fi
-
+fi
    echo -e "\033[38;5;208m"
-   echo -e "     > permag.ir bartarin anti spam farsi                      "
+   echo -e "     > best anti spam source permag.ir                       "
    echo -e "                                              \033[0;00m"
    echo -e "\e[36m"
-   ./tg/tgcli -s ./bot/bot.lua -l 1 -E $@
+   ./tg/tgcli -s ./bot/bot.lua $@
 fi
-		
+

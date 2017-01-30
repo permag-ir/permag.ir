@@ -1,6 +1,4 @@
 --[[
-@permag_bots
-http://permag.ir
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
@@ -2705,6 +2703,8 @@ M.sendForwarded = sendForwarded
 
 return M
 
+-- کد های پایین در ربات نشان داده نمیشوند
 -- http://permag.ir
 -- @permag_ir
 -- @permag_bots
+-- @permag
