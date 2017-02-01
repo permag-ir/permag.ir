@@ -3013,10 +3013,14 @@ _set expire for group_
 ➖*!welcome disable*
 _set welcome for group_
 〰〰〰〰〰
-_You Can Use_ *[!/#]* _To Run The Commands_
-_This Help List Only For_ *Moderators/Owners!*
-_Its Means, Only Group_ *Moderators/Owners* _Can Use It!_
+📣*!broadcast* text
+_Send Msg To All Groups_
+〰〰〰〰〰
+⚙*!autoleave enable*
+⚙*!autoleave disable*
+_set Auto leave_
 
+_You Can Use_ *[!/#]* _To Run The Commands_
 ]]
 
 elseif lang then
@@ -3273,6 +3277,13 @@ text4 = [[
 ➕*!welcome enable*
 ➖*!welcome disable*
 💬 ست کردن و فعال و غیرفعال کردن خوش آمد گویی
+〰〰〰〰〰
+📣 *!broadcast* متن پیام
+💬 ارسال یک پیام به همه گروهایی که ربات مدیر است
+〰〰〰〰〰
+⚙*!autoleave enable*
+⚙*!autoleave disable*
+💬 تنظیم خارج شدن ربات
 ...
 ]]
 return text4
