@@ -1,4 +1,3 @@
---Begin msg_checks.lua By @SoLiD
 local TIME_CHECK = 2
 local function pre_process(msg)
 local data = load_data(_config.moderation.data)
@@ -19,83 +18,83 @@ local data = load_data(_config.moderation.data)
       end
    end
 end
-    if data[tostring(chat)] and data[tostring(chat)]['mutes'] then
-		mutes = data[tostring(chat)]['mutes']
+    if data[tostring(chat)] and data[tostring(chat)]['settings'] then
+		settings = data[tostring(chat)]['settings']
 	else
 		return
 	end
-	if mutes.mute_all then
-		mute_all = mutes.mute_all
+	if settings.mute_all then
+		mute_all = settings.mute_all
 	else
 		mute_all = 'no'
 	end
-	if mutes.mute_gif then
-		mute_gif = mutes.mute_gif
+	if settings.mute_gif then
+		mute_gif = settings.mute_gif
 	else
 		mute_gif = 'no'
 	end
-   if mutes.mute_photo then
-		mute_photo = mutes.mute_photo
+   if settings.mute_photo then
+		mute_photo = settings.mute_photo
 	else
 		mute_photo = 'no'
 	end
-	if mutes.mute_sticker then
-		mute_sticker = mutes.mute_sticker
+	if settings.mute_sticker then
+		mute_sticker = settings.mute_sticker
 	else
 		mute_sticker = 'no'
 	end
-	if mutes.mute_contact then
-		mute_contact = mutes.mute_contact
+	if settings.mute_contact then
+		mute_contact = settings.mute_contact
 	else
 		mute_contact = 'no'
 	end
-	if mutes.mute_inline then
-		mute_inline = mutes.mute_inline
+	if settings.mute_inline then
+		mute_inline = settings.mute_inline
 	else
 		mute_inline = 'no'
 	end
-	if mutes.mute_game then
-		mute_game = mutes.mute_game
+	if settings.mute_game then
+		mute_game = settings.mute_game
 	else
 		mute_game = 'no'
 	end
-	if mutes.mute_text then
-		mute_text = mutes.mute_text
+	if settings.mute_text then
+		mute_text = settings.mute_text
 	else
 		mute_text = 'no'
 	end
-	if mutes.mute_forward then
-		mute_forward = mutes.mute_forward
+	if settings.mute_forward then
+		mute_forward = settings.mute_forward
 	else
 		mute_forward = 'no'
 	end
-	if mutes.mute_location then
-		mute_location = mutes.mute_location
+	if settings.mute_location then
+		mute_location = settings.mute_location
 	else
 		mute_location = 'no'
 	end
-   if mutes.mute_document then
-		mute_document = mutes.mute_document
+   if settings.mute_document then
+		mute_document = settings.mute_document
 	else
 		mute_document = 'no'
 	end
-	if mutes.mute_voice then
-		mute_voice = mutes.mute_voice
+	if settings.mute_voice then
+		mute_voice = settings.mute_voice
 	else
 		mute_voice = 'no'
 	end
-	if mutes.mute_audio then
-		mute_audio = mutes.mute_audio
+	if settings.mute_audio then
+		mute_audio = settings.mute_audio
 	else
 		mute_audio = 'no'
 	end
-	if mutes.mute_video then
-		mute_video = mutes.mute_video
+	if settings.mute_video then
+		mute_video = settings.mute_video
 	else
 		mute_video = 'no'
 	end
-	if mutes.mute_tgservice then
-		mute_tgservice = mutes.mute_tgservice
+	if settings.mute_tgservice then
+		mute_tgservice = settings.mute_tgservice
 	else
 		mute_tgservice = 'no'
 	end
