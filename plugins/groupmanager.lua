@@ -2944,8 +2944,6 @@ _Unpin Pinned Message_
 🛡*!settings*
 _Show Group Settings_
 
-🔕*!mutelist*
-_Show Mutes List_
 
 🔕*!silentlist*
 _Show Silented Users List_
