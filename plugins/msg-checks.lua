@@ -183,7 +183,7 @@ kick_user(user, chat)
       end
     end
 if lock_tag == "yes" then
-local tag_caption = msg.content_.caption_:match("@") or msg.content_.caption_:match("#")
+local tag_caption = msg.content_.caption_:match("@")
 if tag_caption then
  if is_channel then
  del_msg(msg.chat_id_, tonumber(msg.id_))
@@ -303,7 +303,7 @@ and lock_link == "yes" then
 kick_user(user, chat)
    end
 end
-local tag_msg = msg.text:match("@") or msg.text:match("#")
+local tag_msg = msg.text:match("@")
 if tag_msg and lock_tag == "yes" then
  if is_channel then
  del_msg(msg.chat_id_, tonumber(msg.id_))
