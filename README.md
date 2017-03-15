@@ -2,7 +2,7 @@
 http://permag.ir
 
 کانال ما
-@permag_ir
+@f
 
 کانال ربات های ما 
 @permag_bots
